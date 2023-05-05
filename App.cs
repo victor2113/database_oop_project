@@ -171,7 +171,7 @@ Use the arrow keys to choose options and press enter to select one";
 
 
 
-            if(existingUser(userLogin, userPassword))
+            if(!existingUser(userLogin, userPassword))
             {
                 string query_string =
             $"insert into register(user_login , user_password)  values('{userLogin}','{userPassword}')";
