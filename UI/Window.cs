@@ -1,23 +1,26 @@
 ﻿namespace database_oop_project.UI
 {
+    // класс для основного экрана окна
     public class Window
     {
-        internal string Title; // заголовок окна
         internal ConsoleColor BorderColor; // цвет бордюра окна
         internal List<Control?> Controls; // список элементов интерфейса
+        internal string Title; // заголовок окна
         internal Status? StatusBar; // статусная строка
         internal int Width; // ширина окна
         internal int Height; // высота окна
         internal ConsoleChar[,] Screen; // символы экрана окна
+        private ConsoleChar[,] oldScreen; // символы экрана окна
         internal bool IsActive = true; // окно активно или нет
         internal bool IsVisible = true; // окно отображается или нет
-        internal byte X = 0;
-        internal byte Y = 0;
+        internal int X = 0; // координата X верхнего левого угла окна
+        internal int Y = 0; // координата Y верхнего левого угла окна
 
         // конструктор
         public Window(ConsoleColor borderColor, List<Control?> controls, string title, Status? statusBar = null)
         {
             Console.OutputEncoding = System.Text.Encoding.Default;
+            Console.CursorVisible = false;
             BorderColor = borderColor;
             Controls = controls;
             Title = $" {title.Trim()} ";
@@ -26,7 +29,7 @@
             Height = Console.WindowHeight;
             Screen = InitScreen(Width, Height);
             Controls = Controls.OrderBy(c => c.TabIndex).ToList();
-            int minTab = Controls.Find(c=>c.TabIndex>0).TabIndex;
+            int minTab = Controls.Find(c => c.TabIndex > 0).TabIndex;
             foreach (Control? c in Controls)
             {
                 c.IsActive = c.TabIndex == minTab;
@@ -36,7 +39,6 @@
         // считывание пользовательских действий
         internal void Run()
         {
-            Control? cnt;
             if (IsActive && IsVisible)
             {
                 Show();
@@ -44,6 +46,7 @@
                 for (; ; )
                 {
                     if (!IsActive) break;
+                    Control? cnt = Controls.Find(c => c.IsActive);
                     switch (k.Key)
                     {
                         case ConsoleKey.Tab:
@@ -51,13 +54,23 @@
                             Show();
                             break;
                         case ConsoleKey.Enter:
-                            cnt = Controls.Find(c => c.IsActive);
                             if (cnt is Button)
                             {
                                 cnt.CallerAction();
                             }
                             break;
+                        case ConsoleKey.LeftArrow:
+                        case ConsoleKey.RightArrow:
+                            if (cnt is InputBox)
+                            {
+                                ((InputBox)cnt).MoveCursor(k.Key);
+                            }
+                            break;
                         default:
+                            if (!char.IsControl(k.KeyChar) && cnt is InputBox)
+                            {
+                                ((InputBox)cnt).AppendChar(k.KeyChar);
+                            }
                             break;
                     }
                     k = Console.ReadKey(true);
@@ -65,7 +78,7 @@
             }
         }
 
-        private void ActivateNextControl(List<Control?> controls)
+        internal void ActivateNextControl(List<Control?> controls)
         {
             int i = Controls.Find(c => c.IsActive).TabIndex;
             Controls.Find(c => c.IsActive).IsActive = false;
@@ -81,16 +94,27 @@
                     c.IsActive = c.TabIndex == minTab;
                 }
             }
+
+            Control cnt = Controls.Find(c => c.IsActive);
+            if (cnt is InputBox)
+            {
+                ((InputBox)cnt).CursorPos = 0;
+            }
+
         }
 
         // подготовка экрана к перерисовке
         internal void PrepareScreen()
         {
+            oldScreen = Screen;
             Screen = InitScreen(Width, Height);
             AddWindowBorder();
             foreach (Control? control in Controls)
             {
-                control.Show(this);
+                control.Parent = this;
+                control.realX = control.X + X;
+                control.realY = control.Y + Y;
+                control.Show();
             }
             AddStatus();
         }
@@ -99,7 +123,6 @@
         internal void Show()
         {
             Console.SetCursorPosition(0, 0);
-            Console.CursorVisible = false;
             Console.ForegroundColor = Screen[0, 0].FrontColor;
             if (IsVisible)
             {
@@ -107,18 +130,17 @@
                 {
                     PrepareScreen();
                 }
-                WriteScreen();
 
                 for (int j = 0; j < Screen.GetLength(1); j++)
-                for (int i = 0; i < Screen.GetLength(0); i++)
-                {
-                    if (Screen[i, j].FrontColor != ConsoleColor.Black)
+                    for (int i = 0; i < Screen.GetLength(0); i++)
                     {
-                        Console.SetCursorPosition(i, j);
-                        Console.ForegroundColor = Screen[i, j].FrontColor;
-                        Console.Write(Screen[i, j].Char);
+                        if (Screen[i, j].Char != oldScreen[i,j].Char || Screen[i, j].FrontColor != oldScreen[i, j].FrontColor)
+                        {
+                            Console.SetCursorPosition(i, j);
+                            Console.ForegroundColor = Screen[i, j].FrontColor;
+                            Console.Write(Screen[i, j].Char);
+                        }
                     }
-                }
                 Console.ResetColor();
             }
         }
@@ -184,19 +206,6 @@
                     screen[i, j] = new ConsoleChar();
                 }
             return screen;
-        }
-
-        internal void WriteScreen()
-        {
-            string str = string.Empty;
-            for (int j = 0; j < Screen.GetLength(1); j++)
-                for (int i = 0; i < Screen.GetLength(0); i++)
-                {
-                    str += $"{Screen[i, j].Char}";
-                }
-
-            Console.SetCursorPosition(0, 0);
-            Console.Write(str);
         }
     }
 }

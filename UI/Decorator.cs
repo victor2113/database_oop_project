@@ -17,5 +17,6 @@ internal static class Decorator
     internal const char SinHorizontal = '─';
     internal const char SinVertical = '│';
     internal const char Shadow = '▒';
+    internal const char Cursor = '◮';
 
 }
