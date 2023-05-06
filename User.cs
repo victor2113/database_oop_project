@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +13,11 @@ namespace database_oop_project
         public string user_login { get; set; }
         public string user_password { get; set; }
         public string user_fullName { get; set; }
-        public string user_age { get; set; }
+        public int user_age { get; set; }
+        DataBase database = new DataBase();
+        CoolRooms room  = new CoolRooms();
 
-        public User(string user_login, string user_password, string user_fullName, string user_age) 
+        public User(string user_login, string user_password, string user_fullName, int user_age) 
         {
             this.user_login = user_login;
             this.user_password = user_password; 
@@ -21,44 +25,83 @@ namespace database_oop_project
             this.user_age = user_age;
         }
 
-        public void Entry()
+        public void Sign_in()
         {
-            Console.CursorVisible = false;
-            string promt = @"
-Use the arrow keys to choose room and press enter to select one";
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataTable table = new DataTable();
+            
+            string query_string =
+            $"select id_user , user_login , user_password from register where user_login = '{user_login}' and user_password = '{user_password}'";
+            SqlCommand command = new SqlCommand(query_string, database.getConnection());
 
-            DateTime date1 = DateTime.Today;
-
-            string[] options = { "Red Room", "Kid Room", "Console Room" };
-            StartMenu startMenu = new StartMenu(options, promt);
-            int selectedIndex = startMenu.Run();
-
-            switch (selectedIndex)
+            adapter.SelectCommand = command;
+            adapter.Fill(table);
+            if (table.Rows.Count == 1)
             {
-                case 0:
-                    RedRoom();
-                    break;
-                case 1:
-                    KidRoom();
-                    break;
-                case 2:
-                    ConsoleRoom();
-                    break;
+                room.Entry();
+            }
+            else
+            {
+                Console.WriteLine("No such acc!");
             }
         }
-        private void RedRoom()
-        {
 
+        public void Sign_up()
+        {
+            database.openConnection();
+            
+
+            if (!existingUser())
+            {
+                string query_string =
+            $"insert into register(user_login , user_full_name,  user_age , user_password)  values('{user_login}', '{user_fullName}', '{user_age}', '{user_password}')";
+
+                SqlCommand command = new SqlCommand(query_string, database.getConnection());
+
+
+
+                if (command.ExecuteNonQuery() == 1)
+                {
+                    Console.WriteLine("success");
+                }
+                else
+                {
+                    Console.WriteLine("error!");
+                }
+                database.closeConnection();
+
+                Console.ReadKey(true);
+                Sign_in();
+            }
+            else
+            {
+                Console.WriteLine("acc already exist!");
+            }
         }
 
-        private void KidRoom()
+        public Boolean existingUser()
         {
 
-        }
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataTable table = new DataTable();
 
-        private void ConsoleRoom()
-        {
+            string query_string =
+           $"select id_user , user_login , user_password from register where user_login = '{user_login}' and user_password = '{user_password}'";
+            SqlCommand command = new SqlCommand(query_string, database.getConnection());
 
+
+            adapter.SelectCommand = command;
+            adapter.Fill(table);
+
+            if (table.Rows.Count > 0)
+            {
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

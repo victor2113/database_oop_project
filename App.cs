@@ -5,13 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace database_oop_project
 {
     public class App
     {
         DataBase database = new DataBase();
-        public User user { get; set; }
+        User defaultUser = new User("", "", "", 0);
+        User user;
+
+
         public void Begin()
         {
             
@@ -31,10 +35,12 @@ Use the arrow keys to choose options and press enter to select one";
             switch (selectedIndex)
             {
                 case 0:
-                    Sign_in(user);
+                    user = Login();
+                    user.Sign_in();
                     break;
                 case 1:
-                    Sign_up(user);
+                    user = Registration();
+                    user.Sign_up();
                     break;
                 case 2:
                     Exit();
@@ -51,16 +57,12 @@ Use the arrow keys to choose options and press enter to select one";
             Console.ReadKey(true);
             Environment.Exit(0);
         }
-        private void Sign_in(User user)
-        {   
+
+        public User Login() 
+        {
             string userLogin = "";
             string userPassword = "";
 
-
-            SqlDataAdapter adapter = new SqlDataAdapter();
-            DataTable table = new DataTable();
-            
-            
             Console.Clear();
             Console.WriteLine("Enter login");
             while (true)
@@ -77,9 +79,9 @@ Use the arrow keys to choose options and press enter to select one";
                 else
                     userLogin += c.KeyChar;
                 Console.Write(userLogin);
-               
+
             }
-            Console.Clear() ;
+            Console.Clear();
             Console.WriteLine("Enter pass");
             while (true)
             {
@@ -99,37 +101,22 @@ Use the arrow keys to choose options and press enter to select one";
             }
             Console.WriteLine("Login: {0}", userLogin);
             Console.WriteLine("Pass: {0}", userPassword);
-           
 
-
-
-            string query_string =
-            $"select id_user , user_login , user_password from register where user_login = '{userLogin}' and user_password = '{userPassword}'";
-            SqlCommand command = new SqlCommand(query_string , database.getConnection());
-
-            adapter.SelectCommand = command;
-            adapter.Fill(table);
-            if(table.Rows.Count == 1)
-            {
-                user.Entry();
-            }
-            else
-            {
-                Console.WriteLine("No such acc!");
-            }    
-
-            Console.ReadKey(true);
-            Begin();
+            User user = new User(userLogin, userPassword, "", 0);
+            return user;
         }
+        
 
-        private void Sign_up(User user)
+        private User Registration()
         {
             string userLogin = "";
             string userFullName = "";
             string userAge = "";
             string userPassword = "";
             string checkPassword = "";
-            database.openConnection();
+            int Age;
+
+
             Console.Clear();
             Console.WriteLine("Enter login");
             while (true)
@@ -182,7 +169,7 @@ Use the arrow keys to choose options and press enter to select one";
                 else
                     userAge += c.KeyChar;
                 Console.Write(userAge);
-
+                
             }
             Console.Clear();
             Console.WriteLine("Enter password");
@@ -225,7 +212,7 @@ Use the arrow keys to choose options and press enter to select one";
             {
                 Console.WriteLine("Password mismatch");
                 Console.ReadKey(true);
-                Sign_up(user);
+                Registration();
 
             }
             else
@@ -235,62 +222,26 @@ Use the arrow keys to choose options and press enter to select one";
                 Console.WriteLine("Your age: {0}", userAge);
             }
 
-            if(!existingUser(userLogin, userPassword))
+            Age = Convert.ToInt32(userAge);
+            User user = new User(userLogin, userPassword, userFullName, Age);
+
+            if (!user.existingUser())
             {
-                string query_string =
-            $"insert into register(user_login , user_full_name,  user_age , user_password)  values('{userLogin}', '{userFullName}', '{userAge}', '{userPassword}')";
 
-                SqlCommand command = new SqlCommand(query_string, database.getConnection());
+                Console.WriteLine("registration is successful");
 
-
-
-                if (command.ExecuteNonQuery() == 1)
-                {
-                    Console.WriteLine("success");
-                }
-                else
-                {
-                    Console.WriteLine("error!");
-                }
-                database.closeConnection();
-
-                Console.ReadKey(true);
-                Sign_in(user);
-            }
-            else { 
-                Console.WriteLine("acc already exist!");
-                Console.ReadKey(true);
-                Begin();
-            }
-
-            
-        }
-        
-       private Boolean existingUser(string login,string password)
-        {
-            string userLogin = "";
-            string userPassword = "";
-
-            SqlDataAdapter adapter = new SqlDataAdapter();
-            DataTable table = new DataTable();
-
-            string query_string =
-           $"select id_user , user_login , user_password from register where user_login = '{userLogin}' and user_password = '{userPassword}'";
-            SqlCommand command = new SqlCommand(query_string, database.getConnection());
-
-
-            adapter.SelectCommand = command;
-            adapter.Fill(table);
-
-            if (table.Rows.Count > 0)
-            {
-                
-                return true;
+                return user;
             }
             else
             {
-                return false;
+                Console.WriteLine("acc already exist!");
+                Console.ReadKey(true);
+                Registration();
             }
+            return defaultUser;
+
         }
+        
+       
     }
 }
