@@ -11,6 +11,7 @@ namespace database_oop_project
     public class App
     {
         DataBase database = new DataBase();
+        public User user { get; set; }
         public void Begin()
         {
             
@@ -30,16 +31,14 @@ Use the arrow keys to choose options and press enter to select one";
             switch (selectedIndex)
             {
                 case 0:
-                    Sign_in();
+                    Sign_in(user);
                     break;
                 case 1:
-                    Sign_up();
+                    Sign_up(user);
                     break;
                 case 2:
                     Exit();
                     break;
-
-
             }
 
             Console.ReadKey(true);
@@ -52,12 +51,10 @@ Use the arrow keys to choose options and press enter to select one";
             Console.ReadKey(true);
             Environment.Exit(0);
         }
-        private void Sign_in()
+        private void Sign_in(User user)
         {   
             string userLogin = "";
             string userPassword = "";
-
-           
 
 
             SqlDataAdapter adapter = new SqlDataAdapter();
@@ -75,7 +72,7 @@ Use the arrow keys to choose options and press enter to select one";
                 if (c.Key == ConsoleKey.Backspace)
                 {
                     if (userLogin.Length > 0)
-                        userLogin = userLogin.Remove(userPassword.Length - 1);
+                        userLogin = userLogin.Remove(userLogin.Length - 1);
                 }
                 else
                     userLogin += c.KeyChar;
@@ -114,7 +111,7 @@ Use the arrow keys to choose options and press enter to select one";
             adapter.Fill(table);
             if(table.Rows.Count == 1)
             {
-                Console.WriteLine("No error!");
+                user.Entry();
             }
             else
             {
@@ -125,10 +122,13 @@ Use the arrow keys to choose options and press enter to select one";
             Begin();
         }
 
-        private void Sign_up()
+        private void Sign_up(User user)
         {
             string userLogin = "";
+            string userFullName = "";
+            string userAge = "";
             string userPassword = "";
+            string checkPassword = "";
             database.openConnection();
             Console.Clear();
             Console.WriteLine("Enter login");
@@ -141,7 +141,7 @@ Use the arrow keys to choose options and press enter to select one";
                 if (c.Key == ConsoleKey.Backspace)
                 {
                     if (userLogin.Length > 0)
-                        userLogin = userLogin.Remove(userPassword.Length - 1);
+                        userLogin = userLogin.Remove(userLogin.Length - 1);
                 }
                 else
                     userLogin += c.KeyChar;
@@ -149,7 +149,43 @@ Use the arrow keys to choose options and press enter to select one";
 
             }
             Console.Clear();
-            Console.WriteLine("Enter pass");
+            Console.WriteLine("Enter your full name");
+            while (true)
+            {
+                ConsoleKeyInfo c = Console.ReadKey();
+                Console.Clear();
+                if (c.Key == ConsoleKey.Enter)
+                    break;
+                if (c.Key == ConsoleKey.Backspace)
+                {
+                    if (userFullName.Length > 0)
+                        userFullName = userFullName.Remove(userFullName.Length - 1);
+                }
+                else
+                    userFullName += c.KeyChar;
+                Console.Write(userFullName);
+
+            }
+            Console.Clear();
+            Console.WriteLine("Enter your age");
+            while (true)
+            {
+                ConsoleKeyInfo c = Console.ReadKey();
+                Console.Clear();
+                if (c.Key == ConsoleKey.Enter)
+                    break;
+                if (c.Key == ConsoleKey.Backspace)
+                {
+                    if (userAge.Length > 0)
+                        userAge = userAge.Remove(userAge.Length - 1);
+                }
+                else
+                    userAge += c.KeyChar;
+                Console.Write(userAge);
+
+            }
+            Console.Clear();
+            Console.WriteLine("Enter password");
             while (true)
             {
                 ConsoleKeyInfo c = Console.ReadKey();
@@ -166,15 +202,43 @@ Use the arrow keys to choose options and press enter to select one";
                 foreach (char ch in userPassword)
                     Console.Write('*');
             }
-            Console.WriteLine("Login: {0}", userLogin);
-            Console.WriteLine("Pass: {0}", userPassword);
 
+            Console.Clear();
+            Console.WriteLine("Confirm password");
+            while (true)
+            {
+                ConsoleKeyInfo c = Console.ReadKey();
+                Console.Clear();
+                if (c.Key == ConsoleKey.Enter)
+                    break;
+                if (c.Key == ConsoleKey.Backspace)
+                {
+                    if (checkPassword.Length > 0)
+                        checkPassword = checkPassword.Remove(checkPassword.Length - 1);
+                }
+                else
+                    checkPassword += c.KeyChar;
+                foreach (char ch in checkPassword)
+                    Console.Write('*');
+            }
+            if (userPassword != checkPassword)
+            {
+                Console.WriteLine("Password mismatch");
+                Console.ReadKey(true);
+                Sign_up(user);
 
+            }
+            else
+            {
+                Console.WriteLine("Login: {0}", userLogin);
+                Console.WriteLine("Full name: {0}", userFullName);
+                Console.WriteLine("Your age: {0}", userAge);
+            }
 
             if(!existingUser(userLogin, userPassword))
             {
                 string query_string =
-            $"insert into register(user_login , user_password)  values('{userLogin}','{userPassword}')";
+            $"insert into register(user_login , user_full_name,  user_age , user_password)  values('{userLogin}', '{userFullName}', '{userAge}', '{userPassword}')";
 
                 SqlCommand command = new SqlCommand(query_string, database.getConnection());
 
@@ -191,7 +255,7 @@ Use the arrow keys to choose options and press enter to select one";
                 database.closeConnection();
 
                 Console.ReadKey(true);
-                Sign_in();
+                Sign_in(user);
             }
             else { 
                 Console.WriteLine("acc already exist!");
