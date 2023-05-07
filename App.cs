@@ -15,6 +15,7 @@ namespace database_oop_project
         User defaultUser = new User("", "", "", 0);
         User user;
         CoolRooms room;
+        //LK lk;
 
         public void Begin()
         {
@@ -39,12 +40,16 @@ Use the arrow keys to choose options and press enter to select one";
                     user.Sign_in();
                     if (user.user_entry)
                         room.Entry();
+                        //lk.Window();
+                    else
+                        Begin();
                     break;
                 case 1:
                     user = Registration();
                     user.Sign_up();
                     if (user.user_entry)
                         room.Entry();
+                        //lk.Window();
                     break;
                 case 2:
                     Exit();
@@ -109,6 +114,7 @@ Use the arrow keys to choose options and press enter to select one";
             User user = new User(userLogin, userPassword, "", 0);
             
             room = new CoolRooms(user);
+            //lk = new LK(user);
             return user;
         }
         
@@ -233,22 +239,18 @@ Use the arrow keys to choose options and press enter to select one";
 
             if (!user.existingUser())
             {
-
-                Console.WriteLine("registration is successful");
+                Console.WriteLine("Registration is successful");
                 room = new CoolRooms(user);
+                //lk = new LK(user);
                 return user;
             }
             else
             {
-                Console.WriteLine("acc already exist!");
+                Console.WriteLine("Account with this login is already exist!");
                 Console.ReadKey(true);
                 Registration();
                 return defaultUser;
             }
-            
-
         }
-        
-       
     }
 }

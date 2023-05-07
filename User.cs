@@ -44,7 +44,8 @@ namespace database_oop_project
             }
             else
             {
-                Console.WriteLine("No such acc!");
+                Console.WriteLine("No such account!");
+                Console.ReadKey(true);
             }
         }
 
@@ -88,7 +89,7 @@ namespace database_oop_project
             DataTable table = new DataTable();
 
             string query_string =
-           $"select id_user , user_login , user_full_name, user_password from register where user_login = '{user_login}' and user_password = '{user_password}'";
+           $"select id_user , user_login , user_full_name, user_password from register where user_login = '{user_login}'";
             SqlCommand command = new SqlCommand(query_string, database.getConnection());
 
 

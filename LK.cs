@@ -8,6 +8,7 @@ namespace database_oop_project
 {
     public class LK
     {
+        App myapp = new App();
         User user;
         CoolRooms room;
         public LK(User user)
@@ -18,13 +19,13 @@ namespace database_oop_project
         {
             Console.CursorVisible = false;
             string promt = @$"
-Information:
+Personal Information:
 Login: {user.user_login}
 Full Name: {user.user_fullName}
 Age: {user.user_age}";
 
 
-            string[] options = { "See my reservations", "Edit account", "Exit" };
+            string[] options = { "See my reservations", "Add new reservation", "Edit account", "Exit" };
             StartMenu startMenu = new StartMenu(options, promt);
             int selectedIndex = startMenu.Run();
 
@@ -34,20 +35,15 @@ Age: {user.user_age}";
                     Res();
                     break;
                 case 1:
-                    Edit();
+                    room.Entry();
                     break;
                 case 2:
-                    Exit();
+                    Edit();
+                    break;
+                case 3:
+                    myapp.Begin();
                     break;
             }
-        }
-
-        private void Exit()
-        {
-            Console.Clear();
-            Console.WriteLine("\nPress any key to exit....");
-            Console.ReadKey(true);
-            Environment.Exit(0);
         }
 
         private void Edit()
@@ -59,7 +55,7 @@ Age: {user.user_age}";
         {
             Console.CursorVisible = false;
             room = new CoolRooms(user);
-            string promt = @$"
+            string promt = @"
 My reservations: ";
 
 

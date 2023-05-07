@@ -15,15 +15,16 @@ namespace database_oop_project
         public string user_orderTime { get; set; }
 
         DataBase database = new DataBase();
-
+        
         User user;
+
         public CoolRooms(User user)
         {
             this.user = user;
         }
 
         DateTime date1 = DateTime.Now;
-        
+
         public void Entry()
         {
             user.GetFullName();
@@ -46,7 +47,7 @@ Use the arrow keys to choose room and press enter to select one";
                     break;
                 case 2:
                     Day(2);
-                    break;
+                    break;  
             }
         }
 
@@ -105,7 +106,6 @@ Use the arrow keys to choose Time of reservation and press enter to select one";
             string reservation1;
             string reservation2;
             string reservation3;
-            int time = 0;
 
             if (!checkTime(i, "Noon"))
                 reservation1 = "is not reserved";
