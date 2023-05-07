@@ -14,7 +14,7 @@ namespace database_oop_project
         DataBase database = new DataBase();
         User defaultUser = new User("", "", "", 0);
         User user;
-
+        CoolRooms room;
 
         public void Begin()
         {
@@ -37,10 +37,14 @@ Use the arrow keys to choose options and press enter to select one";
                 case 0:
                     user = Login();
                     user.Sign_in();
+                    if (user.user_entry)
+                        room.Entry();
                     break;
                 case 1:
                     user = Registration();
                     user.Sign_up();
+                    if (user.user_entry)
+                        room.Entry();
                     break;
                 case 2:
                     Exit();
@@ -103,6 +107,8 @@ Use the arrow keys to choose options and press enter to select one";
             Console.WriteLine("Pass: {0}", userPassword);
 
             User user = new User(userLogin, userPassword, "", 0);
+            
+            room = new CoolRooms(user);
             return user;
         }
         
@@ -229,7 +235,7 @@ Use the arrow keys to choose options and press enter to select one";
             {
 
                 Console.WriteLine("registration is successful");
-
+                room = new CoolRooms(user);
                 return user;
             }
             else
@@ -237,8 +243,9 @@ Use the arrow keys to choose options and press enter to select one";
                 Console.WriteLine("acc already exist!");
                 Console.ReadKey(true);
                 Registration();
+                return defaultUser;
             }
-            return defaultUser;
+            
 
         }
         
