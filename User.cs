@@ -15,6 +15,7 @@ namespace database_oop_project
         public string user_fullName { get; set; }
         public int user_age { get; set; }
         public bool user_entry { get; set; }
+
         DataBase database = new DataBase();
 
         public User(string user_login, string user_password, string user_fullName, int user_age) 
@@ -109,7 +110,6 @@ namespace database_oop_project
         {
             database.openConnection();
             SqlDataReader adapter = null;
-            DataTable table = new DataTable();
 
             string query_string =
            $"select id_user , user_login , user_full_name , user_password from register where user_login = '{user_login}' and user_password = '{user_password}'";
