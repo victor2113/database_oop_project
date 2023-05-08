@@ -9,7 +9,7 @@
         internal bool IsPassword;
         internal int CursorPos = 0;
         internal string DefText;
-        public InputBox(int x, int y, int tabIndex, string label, string text, ConsoleColor frontColor, byte width, byte lines, bool isReadOnly, bool isPassword, Action callerAction) : base(x, y, tabIndex, label, text, frontColor, callerAction)
+        public InputBox(int x, int y, int tabIndex, string label, string text, ConsoleColor frontColor, byte width, bool isReadOnly, bool isPassword) : base(x, y, tabIndex, label, text, frontColor, null)
         {
             Width = width;
             IsReadOnly = isReadOnly;

@@ -6,7 +6,7 @@
         internal byte Width;
         internal byte Lines;
 
-        public Textbox(int x, int y, int tabIndex, string label, string text, ConsoleColor frontColor, byte width, byte lines, Action callerAction) : base(x, y, tabIndex, label, text, frontColor, callerAction)
+        public Textbox(int x, int y, int tabIndex, string label, string text, ConsoleColor frontColor, byte width, byte lines) : base(x, y, tabIndex, label, text, frontColor, null)
         {
             Width = width;
             Lines = lines;

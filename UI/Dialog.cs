@@ -95,6 +95,10 @@
                             {
                                 cnt.CallerAction();
                             }
+                            if (cnt is Menu)
+                            {
+                                ((Menu)cnt).MenuItems[((Menu)cnt).ActiveKey].Invoke();
+                            }
                             break;
                         case ConsoleKey.Delete:
                         case ConsoleKey.Backspace:
@@ -108,6 +112,22 @@
                             if (cnt is InputBox)
                             {
                                 ((InputBox)cnt).MoveCursor(k.Key);
+                            }
+                            break;
+                        case ConsoleKey.UpArrow:
+                            if (cnt is Menu)
+                            {
+                                List<string> keys = ((Menu)cnt).MenuItems.Keys.ToList();
+                                int idx = keys.IndexOf(((Menu)cnt).ActiveKey);
+                                ((Menu)cnt).ActiveKey = idx == 0 ? keys[keys.Count - 1] : keys[idx - 1];
+                            }
+                            break;
+                        case ConsoleKey.DownArrow:
+                            if (cnt is Menu)
+                            {
+                                List<string> keys = ((Menu)cnt).MenuItems.Keys.ToList();
+                                int idx = keys.IndexOf(((Menu)cnt).ActiveKey);
+                                ((Menu)cnt).ActiveKey = idx == keys.Count - 1 ? keys[0] : keys[idx + 1];
                             }
                             break;
                         default:

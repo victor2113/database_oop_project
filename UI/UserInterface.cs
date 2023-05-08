@@ -11,7 +11,8 @@
             new Button(5, 3, 1, "", "LOGIN",  ConsoleColor.DarkYellow, ConsoleColor.Cyan, LoginShow),
             new Button(5, 6, 2, "", "SIGNUP", ConsoleColor.DarkYellow, ConsoleColor.Cyan, SignupShow),
             new Button(5, 9, 3, "", "ABOUT", ConsoleColor.DarkYellow, ConsoleColor.Cyan, AboutShow),
-            new Button(5, 12, 4, "", "EXIT", ConsoleColor.DarkYellow, ConsoleColor.Cyan, ExitConfirmation),
+            new Button(5, 12, 4, "", "MENU EXAMPLE", ConsoleColor.DarkYellow, ConsoleColor.Cyan, MenuExampleShow),
+            new Button(5, 15, 5, "", "EXIT", ConsoleColor.DarkYellow, ConsoleColor.Cyan, ExitConfirmation),
         };
         internal static Window MainWindow = new(ConsoleColor.DarkCyan, MainWindowControls, "FEFU Database Project", new Status("Press Tab to select element, Enter to click a button", ConsoleColor.DarkMagenta));
         // Main window actions
@@ -33,6 +34,13 @@
             AboutDialog.IsVisible = true;
             AboutDialog.Run();
         }
+        static void MenuExampleShow()
+        {
+            MenuDialog.IsActive = true;
+            MenuDialog.IsVisible = true;
+            MenuDialog.Run();
+        }
+
         static void ExitConfirmation()
         {
             ConfirmationDialog.IsActive = true;
@@ -45,7 +53,7 @@
         // *********************
         static readonly List<Control?> AboutControls = new()
         {
-            new Textbox( 6, 3,-1,"","TEAM:\n\nIgnatov Ilya\n\nMikhaylova Eleonora\n\nAprosimov Anatoliy\n\nMekumyanova Irina\n\nGribanova Katerina",ConsoleColor.DarkGreen,40,12, null),
+            new Textbox( 6, 3,-1,"","TEAM:\n\nIgnatov Ilya\n\nMikhaylova Eleonora\n\nAprosimov Anatoliy\n\nMekumyanova Irina\n\nGribanova Katerina",ConsoleColor.DarkGreen,40,12),
             new Button( 25,  15, 1, "", "OK", ConsoleColor.DarkYellow, ConsoleColor.Cyan, AboutClose),
         };
         internal static Dialog AboutDialog = new(ConsoleColor.DarkMagenta, AboutControls, "About", 50, 18, MainWindow, AboutClose);
@@ -61,7 +69,7 @@
         // *********************
         static readonly List<Control?> ConfirmControls = new()
         {
-            new Textbox( 10, 3,-1,"","Do you really want to exit?",ConsoleColor.DarkGreen,40,12, null),
+            new Textbox( 10, 3,-1,"","Do you really want to exit?",ConsoleColor.DarkGreen,40,12),
             new Button( 18,  6, 1, "", "Yes", ConsoleColor.DarkYellow, ConsoleColor.Cyan, ConfirmationYes),
             new Button( 28,  6, 2, "", "No", ConsoleColor.DarkYellow, ConsoleColor.Cyan, ConfirmationClose),
         };
@@ -86,7 +94,7 @@
         // *********************
         static readonly List<Control?> ErrorControls = new()
         {
-            new Textbox( 10, 3,-1,"","Error message",ConsoleColor.DarkGreen,40,12, null),
+            new Textbox( 10, 3,-1,"","Error message",ConsoleColor.DarkGreen,40,12),
             new Button( 22,  6, 1, "", "Ok", ConsoleColor.DarkYellow, ConsoleColor.Cyan, ErrorClose),
         };
         internal static Dialog ErrorDialog = new(ConsoleColor.DarkRed, ErrorControls, "Error", 50, 10, MainWindow, ExitApplication);
@@ -109,8 +117,8 @@
         // *********************
         static readonly List<Control?> LoginControls = new()
         {
-            new InputBox( 15, 3,1,"Username:","",ConsoleColor.DarkCyan,30,1, false, false, null),
-            new InputBox( 15, 6,2,"Password:","",ConsoleColor.DarkCyan,30,1, false, true, null),
+            new InputBox( 15, 3,1,"Username:","",ConsoleColor.DarkCyan,30, false, false),
+            new InputBox( 15, 6,2,"Password:","",ConsoleColor.DarkCyan,30, false, true),
             new Button( 25,  9, 3, "", "OK", ConsoleColor.DarkYellow, ConsoleColor.Cyan, LoginSubmit),
             new Button( 35,  9, 4, "", "CANCEL", ConsoleColor.DarkYellow, ConsoleColor.Cyan, LoginClose),
         };
@@ -140,10 +148,10 @@
         // *********************
         static readonly List<Control?> SignupControls = new()
         {
-            new InputBox( 24, 3,1,"Username:","",ConsoleColor.DarkCyan,30,1, false, false, null),
-            new InputBox( 24, 6,2,"Email:","",ConsoleColor.DarkCyan,30,1, false, false, null),
-            new InputBox( 24, 9,3,"Password:","",ConsoleColor.DarkCyan,30,1, false, true, null),
-            new InputBox( 24, 12,4,"Confirm password:","",ConsoleColor.DarkCyan,30,1, false, true, null),
+            new InputBox( 24, 3,1,"Username:","",ConsoleColor.DarkCyan,30, false, false),
+            new InputBox( 24, 6,2,"Email:","",ConsoleColor.DarkCyan,30, false, false),
+            new InputBox( 24, 9,3,"Password:","",ConsoleColor.DarkCyan,30, false, true),
+            new InputBox( 24, 12,4,"Confirm password:","",ConsoleColor.DarkCyan,30, false, true),
             new Button( 30,  15, 5, "", "OK", ConsoleColor.DarkYellow, ConsoleColor.Cyan, SignupSubmit),
             new Button( 40,  15, 6, "", "CANCEL", ConsoleColor.DarkYellow, ConsoleColor.Cyan, SignupClose),
         };
@@ -177,6 +185,32 @@
         static void SignupClose()
         {
             SignupDialog.Close();
+            MainWindow.Run();
+        }
+
+
+        // *********************
+        // Menu example dialog
+        // *********************
+        static Dictionary<string, Action> menuItems = new Dictionary<string, Action>()
+        {
+            {"Item 1", MenuDialogClose},
+            {"Item 2", MenuDialogClose},
+            {"Item 3", MenuDialogClose},
+            {"Item 4", MenuDialogClose},
+            {"Item 5", MenuDialogClose}
+        };
+        static readonly List<Control?> MenuControls = new()
+        {
+            new Menu( 6, 3, 1,"","",ConsoleColor.DarkYellow, menuItems),
+            new Button( 25,  9, 2, "", "OK", ConsoleColor.DarkYellow, ConsoleColor.Cyan, MenuDialogClose),
+        };
+        internal static Dialog MenuDialog = new(ConsoleColor.DarkMagenta, MenuControls, "Menu example", 50, 12, MainWindow, MenuDialogClose);
+        // Menu example dialog actions
+        static void MenuDialogClose()
+        {
+            // мо;но получить текущий пункт через .ActiveKey
+            MenuDialog.Close();
             MainWindow.Run();
         }
     }
