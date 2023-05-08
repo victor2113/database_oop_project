@@ -24,7 +24,7 @@ Login: {user.user_login}
 Full Name: {user.user_fullName}
 Age: {user.user_age}";
 
-
+            room = new CoolRooms(user);
             string[] options = { "See my reservations", "Add new reservation", "Edit account", "Exit" };
             StartMenu startMenu = new StartMenu(options, promt);
             int selectedIndex = startMenu.Run();
