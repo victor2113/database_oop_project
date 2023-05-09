@@ -15,7 +15,7 @@ namespace database_oop_project
         public string user_orderTime { get; set; }
 
         DataBase database = new DataBase();
-        LK lk;
+        
         User user;
 
         public CoolRooms(User user)
@@ -32,8 +32,8 @@ namespace database_oop_project
             string promt = @"
 Use the arrow keys to choose room and press enter to select one";
 
-            lk = new LK(user);
-            string[] options = { "Red Room", "Kid Room", "Console Room", "\nGo Back!" } ;
+
+            string[] options = { "Red Room", "Kid Room", "Console Room" } ;
             StartMenu startMenu = new StartMenu(options, promt);
             int selectedIndex = startMenu.Run();
 
@@ -47,10 +47,7 @@ Use the arrow keys to choose room and press enter to select one";
                     break;
                 case 2:
                     Day(2);
-                    break; 
-                case 3:
-                    lk.Window();
-                    break;
+                    break;  
             }
         }
 
@@ -194,18 +191,9 @@ Use the arrow keys to choose Time of reservation and press enter to select one";
             else
             {
                 Console.Clear();
-                if (!deleteReservation(i))
-                {
-                    Console.WriteLine("\nroom is already reserved!");
-                    Console.ReadKey(true);
-                    Time(i);
-                }
-                else
-                {
-                    Console.WriteLine("\nyour reservation is deleted");
-                    Console.ReadKey(true);
-                    Time(i);
-                }
+                Console.WriteLine("\nroom is already reserved!");
+                Console.ReadKey(true);
+                Time(i);
             }
         }
 
@@ -279,38 +267,6 @@ Use the arrow keys to choose Time of reservation and press enter to select one";
             if (table.Rows.Count > 0)
             {
 
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public Boolean deleteReservation(int i)
-        {
-            // создаем строку запроса к базе данных
-            string query_delete = "";
-            if (i == 0)
-            {
-                query_delete = $"DELETE FROM entry_red_room WHERE user_login = '{user.user_login}' AND user_orderDate = '{user_orderDate}' AND user_orderTime = '{user_orderTime}'";
-            }
-            if (i == 1)
-            {
-                query_delete = $"DELETE FROM entry_kid_room WHERE user_login = '{user.user_login}' AND user_orderDate = '{user_orderDate}' AND user_orderTime = '{user_orderTime}'";
-            }
-            if (i == 2)
-            {
-                query_delete = $"DELETE FROM entry_console_room WHERE user_login = '{user.user_login}'  AND user_orderDate = '{user_orderDate}' AND user_orderTime = '{user_orderTime}'";
-            }
-
-            // создаем команду и выполняем ее
-            SqlCommand command = new SqlCommand(query_delete, database.getConnection());
-            int rowsAffected = command.ExecuteNonQuery();
-
-            // проверяем, была ли выполнена команда и возвращаем результат
-            if (rowsAffected > 0)
-            {
                 return true;
             }
             else

@@ -15,7 +15,7 @@ namespace database_oop_project
         User defaultUser = new User("", "", "", 0);
         User user;
         CoolRooms room;
-        LK lk;
+        //LK lk;
 
         public void Begin()
         {
@@ -39,8 +39,8 @@ Use the arrow keys to choose options and press enter to select one";
                     user = Login();
                     user.Sign_in();
                     if (user.user_entry)
-                        //room.Entry();
-                        lk.Window();
+                        room.Entry();
+                        //lk.Window();
                     else
                         Begin();
                     break;
@@ -48,8 +48,8 @@ Use the arrow keys to choose options and press enter to select one";
                     user = Registration();
                     user.Sign_up();
                     if (user.user_entry)
-                        //room.Entry();
-                        lk.Window();
+                        room.Entry();
+                        //lk.Window();
                     break;
                 case 2:
                     Exit();
@@ -111,10 +111,10 @@ Use the arrow keys to choose options and press enter to select one";
             Console.WriteLine("Login: {0}", userLogin);
             Console.WriteLine("Pass: {0}", userPassword);
 
-            User user = new User(userLogin, userPassword, "", 0);
+            User user = new User(userLogin, userPassword);
             
-            //room = new CoolRooms(user);
-            lk = new LK(user);
+            room = new CoolRooms(user);
+            //lk = new LK(user);
             return user;
         }
         
@@ -240,8 +240,8 @@ Use the arrow keys to choose options and press enter to select one";
             if (!user.existingUser())
             {
                 Console.WriteLine("Registration is successful");
-                //room = new CoolRooms(user);
-                lk = new LK(user);
+                room = new CoolRooms(user);
+                //lk = new LK(user);
                 return user;
             }
             else

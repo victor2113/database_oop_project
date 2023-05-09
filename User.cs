@@ -27,6 +27,14 @@ namespace database_oop_project
             this.user_entry = false;
         }
 
+        public User(string user_login, string user_password)
+        {
+            this.user_login = user_login;
+            this.user_password = user_password;
+            this.user_fullName = "";
+            this.user_age = 0;
+        }
+
         public void Sign_in()
         {
             SqlDataAdapter adapter = new SqlDataAdapter();
@@ -38,14 +46,13 @@ namespace database_oop_project
 
             adapter.SelectCommand = command;
             adapter.Fill(table);
-            if (table.Rows.Count == 1)
+            if (table.Rows.Count > 0)
             {
                 user_entry = true;
             }
             else
             {
-                Console.WriteLine("No such account!");
-                Console.ReadKey(true);
+                Console.WriteLine("No such account!");    
             }
         }
 
@@ -72,9 +79,6 @@ namespace database_oop_project
                     Console.WriteLine("error!");
                 }
                 database.closeConnection();
-
-                Console.ReadKey(true);
-                Sign_in();
             }
             else
             {

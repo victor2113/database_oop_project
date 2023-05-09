@@ -10,9 +10,11 @@ namespace database_oop_project
         {
             // show main window
             UserInterface.MainWindow.Run();
-            
+            //UserInterface.test.Run();
+
+
             //App myapp = new App();
-            //myapp.Begin();
+            // myapp.Begin();
         }
     }
 
